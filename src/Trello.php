@@ -1,4 +1,7 @@
 <?php
+//Protocol Corporation Ltda.
+//https://github.com/ProtocolLive/Trello
+//2023.01.27.01
 
 namespace ProtocolLive\Trello;
 
@@ -18,13 +21,15 @@ final class Trello{
   
   public function CardsGet(
     string $List = null,
-    string $Board = null
+    string $Board = null,
+    string $Member = null
   ):array{
     if($Board !== null):
       $return = $this->Curl('boards/' . $Board . '/cards');
-    endif;
-    if($List !== null):
+    elseif($List !== null):
       $return = $this->Curl('lists/' . $List . '/cards');
+    elseif($Member !== null):
+      $return = $this->Curl('members/' . $Member . '/cards');
     endif;
     return json_decode($return);
   }
