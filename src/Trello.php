@@ -1,9 +1,10 @@
 <?php
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/Trello
-//2023.01.27.01
+//2023.01.27.02
 
 namespace ProtocolLive\Trello;
+use stdClass;
 
 final class Trello{
   private const Url = 'https://api.trello.com/1/';
@@ -31,6 +32,13 @@ final class Trello{
     elseif($Member !== null):
       $return = $this->Curl('members/' . $Member . '/cards');
     endif;
+    return json_decode($return);
+  }
+
+  public function CardGet(
+    string $Card
+  ):stdClass{
+    $return = $this->Curl('cards/' . $Card);
     return json_decode($return);
   }
 
@@ -65,5 +73,12 @@ final class Trello{
       $Msg . PHP_EOL,
       FILE_APPEND
     );
+  }
+
+  public function MemberGet(
+    string $Id
+  ):stdClass{
+    $return = $this->Curl('members/' . $Id);
+    return json_decode($return);
   }
 }
