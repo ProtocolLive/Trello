@@ -1,7 +1,7 @@
 <?php
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/Trello
-//2023.01.27.02
+//2023.01.27.03
 
 namespace ProtocolLive\Trello;
 use stdClass;
@@ -79,6 +79,13 @@ final class Trello{
     string $Id
   ):stdClass{
     $return = $this->Curl('members/' . $Id);
+    return json_decode($return);
+  }
+
+  public function MembersGet(
+    string $Board
+  ):array{
+    $return = $this->Curl('boards/' . $Board . '/members');
     return json_decode($return);
   }
 }
