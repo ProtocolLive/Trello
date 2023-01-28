@@ -1,7 +1,7 @@
 <?php
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/Trello
-//2023.01.28.00
+//2023.01.28.01
 
 namespace ProtocolLive\Trello;
 use CurlHandle;
@@ -76,9 +76,17 @@ final class Trello{
     if($Type !== null):
       curl_setopt($this->Curl, CURLOPT_CUSTOMREQUEST, $Type);
     endif;
-    $this->Log('Send: ' . $Url . PHP_EOL . json_encode($Post, JSON_PRETTY_PRINT));
+    $this->Log(
+      'send',
+      $Url . PHP_EOL . json_encode($Post, JSON_PRETTY_PRINT),
+      Start: true
+    );
     $return = curl_exec($this->Curl);
-    $this->Log('Response:' . PHP_EOL . json_encode($return, JSON_PRETTY_PRINT));
+    $this->Log(
+      'response',
+      json_encode($return, JSON_PRETTY_PRINT),
+      End: true
+    );
     if(curl_getinfo($this->Curl, CURLINFO_HTTP_CODE) === 200):
       return $return;
     else:
@@ -97,11 +105,25 @@ final class Trello{
   }
 
   private function Log(
-    string $Msg
+    string $Event,
+    string|stdClass $Msg,
+    bool $Start = false,
+    bool $End = false
   ):void{
+    $msg = '';
+    if($Start):
+      $msg .= date('Y-m-d H:i:s');
+    endif;
+    ob_start();
+    var_dump($Msg);
+    $msg .= ob_get_contents();
+    ob_end_clean();
+    if($End):
+      $msg .= PHP_EOL;
+    endif;
     file_put_contents(
-      $this->DirLogs . '/trello.log',
-      $Msg . PHP_EOL,
+      $this->DirLogs . '/' . $Event . '.log',
+      $msg,
       FILE_APPEND
     );
   }
@@ -156,6 +178,13 @@ final class Trello{
     $return = $this->Curl('members/me/tokens', ['webhooks' => true]);
     $return = json_decode($return);
     return $return[0]->webhooks;
+  }
+
+  public function WebhookReceive():array|stdclass{
+    $temp = file_get_contents('php://input');
+    $return = json_decode($temp);
+    $this->Log('webhook', $return);
+    return $return;
   }
 
   /**
