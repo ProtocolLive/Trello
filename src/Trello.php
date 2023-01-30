@@ -1,7 +1,7 @@
 <?php
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/Trello
-//2023.01.28.01
+//2023.01.30.00
 
 namespace ProtocolLive\Trello;
 use CurlHandle;
@@ -20,6 +20,64 @@ final class Trello{
 
   public function BoardsGet():array{
     $return = $this->Curl('members/me/boards');
+    return json_decode($return);
+  }
+
+  /**
+   * @param string $Name The name for the card
+   * @param string $Description The description for the card
+   * @param string $Position The position of the new card. top or bottom
+   * @param string $DueDate A due date for the card
+   * @param string $StartDate The start date of a card
+   * @param string $List The ID of the list the card should be created in
+   * @param array $Members Comma-separated list of member IDs to add to the card
+   * @param array $Labels Comma-separated list of label IDs to add to the card
+   * @param string $UrlSource A URL starting with http:// or https://
+   * @param string $MimeType The mimeType of the attachment. Max length 256
+   * @param string $CardSource The ID of a card to copy into the new card
+   * @param string $KeepFromSource If using idCardSource you can specify which properties to copy over. all or comma-separated list of: attachments,checklists,customFields,comments,due,start,labels,members,start,stickers
+   * @param string $Address For use with/by the Map View
+   * @param string $LocationName For use with/by the Map View
+   * @param string $Coordinates For use with/by the Map View. Should take the form latitude,longitude
+   * @link https://developer.atlassian.com/cloud/trello/rest/api-group-cards/#api-cards-post
+   */
+  public function CardAdd(
+    string $List,
+    string $Name,
+    string $Description = null,
+    string $Position = 'top',
+    string $DueDate = null,
+    string $StartDate = null,
+    bool $DueComplete = null,
+    array $Members = null,
+    array $Labels = null,
+    string $UrlSource = null,
+    string $FileSource = null,
+    string $MimeType = null,
+    string $CardSource = null,
+    string $KeepFromSource = null,
+    string $Address = null,
+    string $LocationName = null,
+    string $Coordinates = null
+  ):stdClass{
+    $params['idList'] = $List;
+    $params['name'] = $Name;
+    $params['desc'] = $Description;
+    $params['pos'] = $Position;
+    $params['due'] = $DueDate;
+    $params['start'] = $StartDate;
+    $params['dueComplete'] = $DueComplete;
+    $params['idMembers'] = $Members;
+    $params['idLabels'] = $Labels;
+    $params['urlSource'] = $UrlSource;
+    $params['fileSource'] = $FileSource;
+    $params['mimeType'] = $MimeType;
+    $params['idCardSource'] = $CardSource;
+    $params['keepFromSource'] = $KeepFromSource;
+    $params['address'] = $Address;
+    $params['locationName'] = $LocationName;
+    $params['coordinates'] = $Coordinates;
+    $return = $this->Curl('cards', $params, Type: 'POST');
     return json_decode($return);
   }
   
