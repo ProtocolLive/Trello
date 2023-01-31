@@ -1,7 +1,7 @@
 <?php
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/Trello
-//2023.01.30.01
+//2023.01.31.00
 
 namespace ProtocolLive\Trello;
 use CurlHandle;
@@ -165,6 +165,15 @@ final class Trello{
     bool $Start = false,
     bool $End = false
   ):void{
+    self::Log2($Msg, $Start, $End, $this->DirLogs);
+  }
+
+  private static function Log2(
+    string $Msg,
+    bool $Start,
+    bool $End,
+    string $DirLogs
+  ):void{
     $msg = '';
     if($Start):
       $msg .= date('Y-m-d H:i:s') . ' ';
@@ -174,7 +183,7 @@ final class Trello{
       $msg .= PHP_EOL . PHP_EOL;
     endif;
     file_put_contents(
-      $this->DirLogs . '/trello.log',
+      $DirLogs . '/trello.log',
       $msg,
       FILE_APPEND
     );
@@ -232,13 +241,16 @@ final class Trello{
     return $return[0]->webhooks;
   }
 
-  public function WebhookReceive():array|stdclass{
+  public static function WebhookReceive(
+    string $DirLogs
+  ):array|stdclass|null{
     $temp = file_get_contents('php://input');
     $return = json_decode($temp);
-    $this->Log(
+    self::Log2(
       'Webhook:' . PHP_EOL . json_encode($return, JSON_PRETTY_PRINT),
       true,
-      true
+      true,
+      $DirLogs
     );
     return $return;
   }
