@@ -1,7 +1,7 @@
 <?php
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/Trello
-//2023.01.31.00
+//2023.02.01.00
 
 namespace ProtocolLive\Trello;
 use CurlHandle;
@@ -78,6 +78,78 @@ final class Trello{
     $params['locationName'] = $LocationName;
     $params['coordinates'] = $Coordinates;
     $return = $this->Curl('cards', $params, Type: 'POST');
+    return json_decode($return);
+  }
+
+  /**
+   * @param string $Card The ID of the Card
+   * @param string $Name The new name for the card
+   * @param string $Description The new description for the card
+   * @param bool $Closed Whether the card should be archived
+   * @param array $Members Comma-separated list of member IDs
+   * @param string $CoverImage The ID of the image attachment the card should use as its cover, or null for none
+   * @param string $List The ID of the list the card should be in
+   * @param array $Labels Comma-separated list of label IDs
+   * @param string $Board The ID of the board the card should be on
+   * @param string $Position The position of the card in its list. top, bottom, or a positive float
+   * @param string $DueDate When the card is due, or null
+   * @param string $StartDate The start date of a card, or null
+   * @param bool $DueComplete Whether the due date should be marked complete
+   * @param bool $Subscribed Whether the member is should be subscribed to the card
+   * @param string $Address For use with/by the Map View
+   * @param string $LocationName For use with/by the Map View
+   * @param string $Coordinates For use with/by the Map View. Should be latitude,longitude
+   * @param string $Cover Updates the card's cover
+   * 
+   * color - pink, yellow, lime, blue, black, orange, red, purple, sky, green - Makes the cover a solid color
+   * 
+   * brightness - dark, light - Determines whether the text on the cover should be dark or light.
+   * 
+   * url - An unsplash URL: https://images.unsplash.com - Used if making an image the cover. Only Unsplash URLs work.
+   * 
+   * idAttachment - ID of an attachment on the card	Used if setting an attached image as the cover.
+   *
+   * size - normal, full - Determines whether to show the card name on the cover, or below it.
+   * @link https://developer.atlassian.com/cloud/trello/rest/api-group-cards/#api-cards-id-put
+   */
+  public function CardEdit(
+    string $Card,
+    string $Name = null,
+    string $Description = null,
+    bool $Closed = null,
+    array $Members = null,
+    string $CoverImage = null,
+    string $List = null,
+    array $Labels = null,
+    string $Board = null,
+    string $Position = 'top',
+    string $DueDate = null,
+    string $StartDate = null,
+    bool $DueComplete = null,
+    bool $Subscribed = null,
+    string $Address = null,
+    string $LocationName = null,
+    string $Coordinates = null,
+    string $Cover = null
+  ):stdClass{
+    $params['name'] = $Name;
+    $params['desc'] = $Description;
+    $params['closed'] = $Closed;
+    $params['idMembers'] = $Members;
+    $params['idAttachmentCover'] = $CoverImage;
+    $params['idList'] = $List;
+    $params['idLabels'] = $Labels;
+    $params['idBoard'] = $Board;
+    $params['pos'] = $Position;
+    $params['due'] = $DueDate;
+    $params['start'] = $StartDate;
+    $params['dueComplete'] = $DueComplete;
+    $params['subscribed'] = $Subscribed;
+    $params['address'] = $Address;
+    $params['address'] = $LocationName;
+    $params['coordinates'] = $Coordinates;
+    $params['cover'] = $Cover;
+    $return = $this->Curl('cards/' . $Card, $params, Type: 'PUT');
     return json_decode($return);
   }
   
