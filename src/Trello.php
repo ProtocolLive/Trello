@@ -1,7 +1,7 @@
 <?php
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/Trello
-//2023.02.01.00
+//2023.02.02.00
 
 namespace ProtocolLive\Trello;
 use CurlHandle;
@@ -18,8 +18,51 @@ final class Trello{
     private string $DirLogs
   ){}
 
-  public function BoardsGet():array{
-    $return = $this->Curl('members/me/boards');
+  /**
+   * @param string $Member The ID or username of the member
+   * @param string $Filter all or a comma-separated list of: closed, members, open, organization, public, starred
+   * @param string $Fields all or a comma-separated list of board fields
+   * 
+   * Valid values: id, name, desc, descData, closed, idMemberCreator, idOrganization, pinned, url, shortUrl, prefs, labelNames, starred, limits, memberships, enterpriseOwned
+   * @param string $Lists Which lists to include with the boards. One of: all, closed, none, open
+   * 
+   * Default: none
+   * 
+   * Valid values: all, closed, none, open
+   * @param bool $Organization Whether to include the Organization object with the Boards
+   * 
+   * Default: false
+   * @param string $OrganizationFields all or a comma-separated list of organization fields
+   * 
+   * Style: form
+   * Valid values: id, name
+   * @throws Exception
+   * @link https://developer.atlassian.com/cloud/trello/rest/api-group-members/#api-members-id-boards-get
+   */
+  public function BoardsGet(
+    string $Member = 'me',
+    string $Filter = null,
+    string $Fields = null,
+    string $Lists = null,
+    bool $Organization = false,
+    string $OrganizationFields = null
+  ):array{
+    if($Filter !== null):
+      $params['filter'] = $Filter;
+    endif;
+    if($Fields !== null):
+      $params['fields'] = $Fields;
+    endif;
+    if($Lists !== null):
+      $params['lists'] = $Lists;
+    endif;
+    if($Organization !== null):
+      $params['organization'] = $Organization;
+    endif;
+    if($OrganizationFields !== null):
+      $params['organization_fields'] = $OrganizationFields;
+    endif;
+    $return = $this->Curl('members/' . $Member . '/boards', $params);
     return json_decode($return);
   }
 
