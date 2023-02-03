@@ -1,7 +1,7 @@
 <?php
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/Trello
-//2023.02.01.00
+//2023.02.03.00
 
 namespace ProtocolLive\Trello;
 
@@ -12,7 +12,8 @@ enum Events:string{
   case CardArchived = 'action_archived_card';
   case CardDescription = 'action_changed_description_of_card';
   case CardAdd = 'action_create_card';
-  case CardAddAttach = 'action_add_attachment_to_card';
+  case CardAttachAdd = 'action_add_attachment_to_card';
+  case CardAttachDel = 'action_delete_attachment_from_card';
   case CardDel = 'action_delete_card';
   case CardLabelAdd = 'action_add_label_to_card';
   case CardMemberAdd = 'action_added_member_to_card';
